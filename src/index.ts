@@ -105,7 +105,10 @@ async function main(): Promise<void> {
   // Capture the narrowed type so it survives into the announce() closure.
   const announceChannel: TextBasedChannel = channel;
 
-  const sources: GiveawaySource[] = [new EpicSource(cfg.epic), new GamerPowerSource()];
+  const sources: GiveawaySource[] = [
+    new EpicSource(cfg.epic),
+    new GamerPowerSource(cfg.gamerpower),
+  ];
   let lastPoll: LastPoll | null = null;
 
   async function announce(giveaway: GameGiveaway): Promise<void> {

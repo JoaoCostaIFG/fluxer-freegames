@@ -1,3 +1,4 @@
+import type { GamerPowerConfig } from '../config.js';
 import { fetchJson, normalize, parseUtcDate } from '../util.js';
 import { storeDisplayName, type GameGiveaway, type GiveawaySource } from './types.js';
 
@@ -110,11 +111,14 @@ const ENDED_GRACE_MS = 5 * 60_000;
 export class GamerPowerSource implements GiveawaySource {
   readonly id = 'gamerpower' as const;
 
+  constructor(private readonly cfg: GamerPowerConfig) {}
+
   async poll(): Promise<GameGiveaway[]> {
     const giveaways = await fetchJson<GamerPowerGiveaway[]>(
       'https://www.gamerpower.com/api/giveaways',
     );
 
+    const maxOpenEndedAgeMs = this.cfg.maxOpenEndedAgeDays * 24 * 60 * 60 * 1000;
     const out: GameGiveaway[] = [];
     for (const giveaway of giveaways) {
       if (!giveaway.id || !giveaway.title) continue;
@@ -124,6 +128,11 @@ export class GamerPowerSource implements GiveawaySource {
       const ends = parseUtcDate(giveaway.end_date ?? null);
       if (ends && Date.now() > ends.getTime() + ENDED_GRACE_MS) continue; // already over
       const starts = parseUtcDate(giveaway.published_date ?? null);
+      // Open-ended entries never expire in the feed; skip stale ones so
+      // years-dead DLC-key packs are not announced as fresh deals.
+      if (!ends && starts && maxOpenEndedAgeMs > 0 && Date.now() - starts.getTime() > maxOpenEndedAgeMs) {
+        continue;
+      }
       const worth = (giveaway.worth ?? '').trim();
 
       out.push({

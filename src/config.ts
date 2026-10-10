@@ -15,6 +15,15 @@ export interface EpicConfig {
   locale: string;
 }
 
+export interface GamerPowerConfig {
+  /**
+   * Skip open-ended giveaways (no end date) published longer ago than this
+   * many days. GamerPower's feed never expires some entries; without this
+   * guard years-dead DLC-key packs get announced. 0 disables the guard.
+   */
+  maxOpenEndedAgeDays: number;
+}
+
 export interface AppConfig {
   /** Guild (server) snowflake, or "auto" for the first guild the bot is in. */
   guildId: string;
@@ -24,6 +33,7 @@ export interface AppConfig {
   reapIntervalMinutes: number;
   endGraceMinutes: number;
   epic: EpicConfig;
+  gamerpower: GamerPowerConfig;
   filters: Filters;
 }
 
@@ -91,6 +101,7 @@ export function loadConfig(path: string): AppConfig {
   }
   const root = (raw ?? {}) as Record<string, unknown>;
   const epic = (root.epic ?? {}) as Record<string, unknown>;
+  const gamerpower = (root.gamerpower ?? {}) as Record<string, unknown>;
   const filters = (root.filters ?? {}) as Record<string, unknown>;
   return {
     guildId:
@@ -103,6 +114,14 @@ export function loadConfig(path: string): AppConfig {
     epic: {
       country: typeof epic.country === 'string' && epic.country.trim() ? epic.country.trim() : 'US',
       locale: typeof epic.locale === 'string' && epic.locale.trim() ? epic.locale.trim() : 'en-US',
+    },
+    gamerpower: {
+      maxOpenEndedAgeDays:
+        typeof gamerpower.maxOpenEndedAgeDays === 'number' &&
+        Number.isFinite(gamerpower.maxOpenEndedAgeDays) &&
+        gamerpower.maxOpenEndedAgeDays >= 0
+          ? gamerpower.maxOpenEndedAgeDays
+          : 30,
     },
     filters: {
       stores: asStringArray(filters.stores),
