@@ -1,0 +1,10 @@
+services:
+  freegames:
+    build: .
+    image: freegames:latest
+    container_name: freegames
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - ./data:/app/data

@@ -1,0 +1,16 @@
+{
+  "guildId": "auto",
+  "channel": "free-games",
+  "pollIntervalMinutes": 20,
+  "reapIntervalMinutes": 5,
+  "endGraceMinutes": 10,
+  "epic": {
+    "country": "US",
+    "locale": "en-US"
+  },
+  "filters": {
+    "stores": ["epic", "steam", "gog", "itch", "ubisoft"],
+    "platforms": ["pc"],
+    "types": ["game", "dlc"]
+  }
+}
