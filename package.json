@@ -1,6 +1,6 @@
 {
   "name": "freegames",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "FreeGames — announces free game giveaways into a Fluxer channel",
   "type": "module",
   "private": true,

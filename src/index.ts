@@ -24,7 +24,12 @@ const HEARTBEAT_MIN_INTERVAL_MS = 5_000;
 const HEARTBEAT_TICK_MS = 15_000;
 
 function startHeartbeat(client: import('@fluxerjs/core').Client): void {
-  let gatewayAlive = false;
+  // connect() awaited gateway READY before calling us and its once()
+  // consumed that event, so a Ready subscription here would never fire and
+  // the file would never be written (v1.0.0 reported "unhealthy" forever
+  // because of exactly that race). The connection is alive from the first
+  // tick; the handlers below still catch later reconnects and disconnects.
+  let gatewayAlive = true;
   let lastTouch = 0;
 
   const touch = (force = false): void => {
@@ -47,6 +52,10 @@ function startHeartbeat(client: import('@fluxerjs/core').Client): void {
       gatewayAlive = false;
     });
   }
+
+  // Write the file right away instead of waiting for the first tick, so the
+  // container goes healthy as soon as the bot is up.
+  touch(true);
 
   const timer = setInterval(() => {
     if (gatewayAlive) touch();
