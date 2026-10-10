@@ -1,4 +1,7 @@
-# pnpm settings (single-package repo). Approve esbuild's install script so
-# pnpm >= 12 does not hard-fail the install with ERR_PNPM_IGNORED_BUILDS.
-onlyBuiltDependencies:
-  - esbuild
+# pnpm settings (single-package repo).
+# esbuild's install script is unnecessary here: its native binary ships inside
+# the @esbuild/<platform> package; the script only validates it. Recorded via
+# `pnpm approve-builds` so installs pass cleanly (ERR_PNPM_IGNORED_BUILDS
+# otherwise fails the Docker build).
+allowBuilds:
+  esbuild: false
