@@ -4,7 +4,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 RUN corepack enable
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile=false
 COPY tsconfig.json ./
 COPY src ./src
@@ -22,7 +22,7 @@ LABEL org.opencontainers.image.title="fluxer-freegames" \
 	org.opencontainers.image.licenses=MIT \
 	org.opencontainers.image.authors="JoaoCostaIFG"
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN corepack enable && pnpm install --prod --frozen-lockfile=false
 COPY --from=build /app/dist ./dist
 RUN mkdir -p /app/data && chown -R node:node /app
