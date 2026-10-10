@@ -98,6 +98,10 @@ function mapType(raw: string | undefined): string {
   }
 }
 
+/** Deals that ended more than this long ago are skipped; the GamerPower
+ *  feed lingers on freshly-ended giveaways. */
+const ENDED_GRACE_MS = 5 * 60_000;
+
 /**
  * GamerPower aggregates giveaways across many stores (Steam, GOG, itch.io,
  * Ubisoft, IndieGala, Fanatical, Alienware, ...). Epic giveaways are skipped
@@ -118,6 +122,7 @@ export class GamerPowerSource implements GiveawaySource {
       if (store === 'epic') continue;
 
       const ends = parseUtcDate(giveaway.end_date ?? null);
+      if (ends && Date.now() > ends.getTime() + ENDED_GRACE_MS) continue; // already over
       const starts = parseUtcDate(giveaway.published_date ?? null);
       const worth = (giveaway.worth ?? '').trim();
 
