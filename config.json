@@ -5,8 +5,8 @@
   "reapIntervalMinutes": 5,
   "endGraceMinutes": 10,
   "epic": {
-    "country": "US",
-    "locale": "en-US"
+    "country": "PT",
+    "locale": "pt-PT"
   },
   "gamerpower": {
     "maxOpenEndedAgeDays": 15
