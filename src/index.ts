@@ -1,5 +1,6 @@
+import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import type { TextBasedChannel } from '@fluxerjs/core';
+import { Events, type TextBasedChannel } from '@fluxerjs/core';
 import { loadConfig, parseArgs, type Filters } from './config.js';
 import { loadDotEnv } from './env.js';
 import { buildAnnouncementEmbed } from './embed.js';
@@ -13,6 +14,47 @@ import { log, normalize, sleep } from './util.js';
 
 /** Delay between consecutive announcement posts (basic rate-limit safety). */
 const POST_SPACING_MS = 700;
+
+// -- Liveness heartbeat ------------------------------------------------------
+// The bot touches HEARTBEAT_FILE while the gateway connection is alive (same
+// pattern the Fluxer worker container uses); the Docker HEALTHCHECK fails
+// when the file goes stale. Touches are throttled like eventer's.
+const HEARTBEAT_FILE = '/tmp/bot-heartbeat';
+const HEARTBEAT_MIN_INTERVAL_MS = 5_000;
+const HEARTBEAT_TICK_MS = 15_000;
+
+function startHeartbeat(client: import('@fluxerjs/core').Client): void {
+  let gatewayAlive = false;
+  let lastTouch = 0;
+
+  const touch = (force = false): void => {
+    const now = Date.now();
+    if (!force && now - lastTouch < HEARTBEAT_MIN_INTERVAL_MS) return;
+    lastTouch = now;
+    void writeFile(HEARTBEAT_FILE, `${now}\n`, 'utf8').catch(() => {
+      // Non-fatal: only the Docker healthcheck reads this file.
+    });
+  };
+
+  for (const event of [Events.Ready, Events.Resumed, Events.ShardReady, Events.ShardResumed]) {
+    client.on(event, () => {
+      gatewayAlive = true;
+      touch(true);
+    });
+  }
+  for (const event of [Events.ShardDisconnect, Events.ShardReconnecting]) {
+    client.on(event, () => {
+      gatewayAlive = false;
+    });
+  }
+
+  const timer = setInterval(() => {
+    if (gatewayAlive) touch();
+  }, HEARTBEAT_TICK_MS);
+  // Never keep the process alive on our own — the gateway connection owns
+  // the event loop in run mode, and --once mode must be able to exit.
+  timer.unref?.();
+}
 
 function applyFilters(games: GameGiveaway[], filters: Filters): GameGiveaway[] {
   if (
@@ -54,6 +96,7 @@ async function main(): Promise<void> {
   );
 
   const client = await connect(token, origin);
+  startHeartbeat(client);
   const target = await resolveTarget(client, cfg);
   log.info(`fluxer: announcing in #${target.channelName} on "${target.guildName}"`);
 

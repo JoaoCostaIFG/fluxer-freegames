@@ -69,7 +69,7 @@ pnpm start -- --dry-run    # log what would be posted, send nothing, write no st
 pnpm start -- --announce-existing   # first run: post everything currently free
 ```
 
-Docker:
+Docker (local):
 
 ```bash
 docker compose up -d --build
@@ -77,7 +77,43 @@ docker compose logs -f
 ```
 
 The container mounts `config.json` (read-only) and the `data/` directory so the
-announced-games state survives rebuilds.
+announced-games state survives rebuilds. It runs as the non-root `node` user
+and reports its health from the gateway heartbeat (a stale heartbeat means the
+container gets restarted).
+
+## Deploys (CI/CD)
+
+Every push to `main` (and every `v*` tag) builds a **multi-arch image**
+(`linux/amd64` + `linux/arm64`) in GitHub Actions and publishes it to GitHub
+Container Registry as `ghcr.io/<owner>/freegames` (see
+`.github/workflows/docker.yml`):
+
+| Event | Image tags |
+| --- | --- |
+| push to `main` | `latest`, `main`, `sha-<short>` |
+| push of `v1.2.3` | `1.2.3`, `1.2`, `1` (+ GitHub Release) |
+| pull request | build only — nothing is pushed |
+
+Releasing:
+
+1. Bump `version` in `package.json` (the workflow refuses `v*` tags that
+   disagree with it).
+2. Tag and push: `git tag v1.2.3 && git push origin v1.2.3`.
+3. CI builds the image and creates the GitHub Release with generated notes.
+
+Deploying on a server:
+
+```bash
+mkdir freegames && cd freegames
+# provide: compose.yaml, .env, config.json  (data/ is created automatically)
+docker compose pull && docker compose up -d
+```
+
+`compose.yaml` pins the image by semver tag; Renovate (see `renovate.json`)
+opens PRs to bump the pin whenever a new `v*` release is tagged, so a deploy
+is just "merge the Renovate PR, then `docker compose pull && up -d`".
+State in `data/` survives upgrades, so announced deals still get their ❌
+reaction after a restart.
 
 ## Behaviour notes
 

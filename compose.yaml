@@ -1,10 +1,19 @@
 services:
   freegames:
+    # Pinned version — Renovate opens PRs to bump this as new releases are
+    # tagged. The published multi-arch image (linux/amd64 + linux/arm64)
+    # carries matching semver tags (1.2.3, 1.2, 1) for every v* release.
+    # `build: .` below makes `docker compose up --build` build locally instead;
+    # for local builds against the latest code use tag `main` or `latest`.
+    image: ghcr.io/joaocostaifg/freestuff:1.0.0
     build: .
-    image: freegames:latest
-    container_name: freegames
     restart: unless-stopped
     env_file: .env
+    mem_limit: 128m
     volumes:
+      # Channel/filters/intervals live in config.json (see config.example.json).
       - ./config.json:/app/config.json:ro
+      # Announced-games state (data/state.json) so deals keep their ❌ across
+      # restarts and upgrades. Bind mount (not a named volume) on purpose:
+      # easy to inspect and back up next to this file.
       - ./data:/app/data
