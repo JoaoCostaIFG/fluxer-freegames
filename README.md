@@ -53,7 +53,7 @@ Edit `config.json`:
 | `endGraceMinutes` | `10` | Extra delay after an end time before marking done. |
 | `epic.country` | `"US"` | Epic store country — affects currency/prices. Use e.g. `PT` for euro pricing. |
 | `epic.locale` | `"en-US"` | Epic store locale. |
-| `gamerpower.maxOpenEndedAgeDays` | `90` | Giveaways with no end date are treated as fresh for this many days after publication; older ones are skipped (and their announcements marked done) — the feed never expires some entries, and they are usually long-dead key packs. `0` disables the guard. |
+| `gamerpower.maxOpenEndedAgeDays` | `15` | Giveaways with no end date are treated as fresh for this many days after publication; older ones are skipped (and their announcements marked done) — the feed never expires some entries, and they are usually long-dead key packs. `0` disables the guard. |
 | `filters.stores` | see below | Store slugs to allow: `epic`, `steam`, `gog`, `itch`, `ubisoft`, `indiegala`, `fanatical`, `alienware`. Empty = all. |
 | `filters.platforms` | `["pc"]` | Platform slugs to allow: `pc`, `android`, `ios`, `xbox`, `playstation`, `switch`, `vr`, `browser`. Empty = all. |
 | `filters.types` | `["game", "dlc"]` | Giveaway types to allow: `game`, `dlc`, `early-access`, `beta`, `alpha`, `demo`, `loot`. Empty = all. |

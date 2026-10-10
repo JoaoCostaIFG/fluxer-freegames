@@ -9,7 +9,7 @@
     "locale": "en-US"
   },
   "gamerpower": {
-    "maxOpenEndedAgeDays": 90
+    "maxOpenEndedAgeDays": 15
   },
   "filters": {
     "stores": ["epic", "steam", "gog", "itch", "ubisoft"],

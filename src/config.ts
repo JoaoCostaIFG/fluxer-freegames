@@ -121,7 +121,7 @@ export function loadConfig(path: string): AppConfig {
         Number.isFinite(gamerpower.maxOpenEndedAgeDays) &&
         gamerpower.maxOpenEndedAgeDays >= 0
           ? gamerpower.maxOpenEndedAgeDays
-          : 30,
+          : 15,
     },
     filters: {
       stores: asStringArray(filters.stores),
