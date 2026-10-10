@@ -1,7 +1,7 @@
 name: docker
 
 # Builds a multi-arch (linux/amd64 + linux/arm64) image and publishes it to
-# GitHub Container Registry as ghcr.io/<owner>/freegames.
+# GitHub Container Registry as ghcr.io/<owner>/fluxer-freegames.
 #
 # Tags produced by docker/metadata-action:
 #   - push to main            -> latest, main, sha-<short>

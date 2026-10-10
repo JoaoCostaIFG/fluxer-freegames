@@ -86,7 +86,7 @@ container gets restarted).
 
 Every push to `main` (and every `v*` tag) builds a **multi-arch image**
 (`linux/amd64` + `linux/arm64`) in GitHub Actions and publishes it to GitHub
-Container Registry as `ghcr.io/<owner>/freegames` (see
+Container Registry as `ghcr.io/<owner>/fluxer-freegames` (see
 `.github/workflows/docker.yml`):
 
 | Event | Image tags |
@@ -105,7 +105,7 @@ Releasing:
 Deploying on a server:
 
 ```bash
-mkdir freegames && cd freegames
+mkdir fluxer-freegames && cd fluxer-freegames
 # provide: compose.yaml, .env, config.json  (data/ is created automatically)
 docker compose pull && docker compose up -d
 ```
