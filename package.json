@@ -4,7 +4,7 @@
   "description": "FreeGames — announces free game giveaways into a Fluxer channel",
   "type": "module",
   "private": true,
-  "license": "MIT",
+  "license": "EUPL-1.2",
   "packageManager": "pnpm@11.28.5",
   "engines": {
     "node": ">=22.13"

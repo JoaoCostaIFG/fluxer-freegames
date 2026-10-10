@@ -19,7 +19,7 @@ LABEL org.opencontainers.image.title="fluxer-freegames" \
 	org.opencontainers.image.description="Free-games bot for self-hosted Fluxer instances: announces giveaways (Epic, Steam, GOG, ...) in a channel and marks ended deals" \
 	org.opencontainers.image.source=https://github.com/JoaoCostaIFG/fluxer-freegames \
 	org.opencontainers.image.url=https://github.com/JoaoCostaIFG/fluxer-freegames \
-	org.opencontainers.image.licenses=MIT \
+	org.opencontainers.image.licenses=EUPL-1.2 \
 	org.opencontainers.image.authors="JoaoCostaIFG"
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

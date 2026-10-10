@@ -156,5 +156,7 @@ src/
 
 ## License
 
-MIT — do what you want. Sources polled are public community APIs; please be
-nice to them (the default 20-minute poll interval is deliberately gentle).
+EUPL-1.2 (European Union Public Licence) — see [LICENSE](LICENSE) or
+<https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12>. Sources
+polled are public community APIs; please be nice to them (the default
+20-minute poll interval is deliberately gentle).
