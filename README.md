@@ -48,8 +48,8 @@ Edit `config.json`:
 | --- | --- | --- |
 | `guildId` | `"auto"` | Guild (server) ID, or `auto` to use the first guild the bot is in. |
 | `channel` | `"free-games"` | Channel **name** to announce in. A numeric value is treated as a channel ID. |
-| `pollIntervalMinutes` | `20` | How often to check the sources. |
-| `reapIntervalMinutes` | `5` | How often to check for finished deals (adds the ❌). |
+| `pollIntervalMinutes` | `60` | How often to check the sources. |
+| `reapIntervalMinutes` | `60` | How often to check for finished deals (adds the ❌). |
 | `endGraceMinutes` | `10` | Extra delay after an end time before marking done. |
 | `epic.country` | `"US"` | Epic store country — affects currency/prices. Use e.g. `PT` for euro pricing. |
 | `epic.locale` | `"en-US"` | Epic store locale. |

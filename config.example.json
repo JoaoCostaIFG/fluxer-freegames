@@ -1,8 +1,8 @@
 {
   "guildId": "auto",
   "channel": "free-games",
-  "pollIntervalMinutes": 20,
-  "reapIntervalMinutes": 5,
+  "pollIntervalMinutes": 60,
+  "reapIntervalMinutes": 60,
   "endGraceMinutes": 10,
   "epic": {
     "country": "US",

@@ -108,8 +108,8 @@ export function loadConfig(path: string): AppConfig {
       typeof root.guildId === 'string' && root.guildId.trim() ? root.guildId.trim() : 'auto',
     channel:
       typeof root.channel === 'string' && root.channel.trim() ? root.channel.trim() : 'free-games',
-    pollIntervalMinutes: asPositiveNumber(root.pollIntervalMinutes, 20),
-    reapIntervalMinutes: asPositiveNumber(root.reapIntervalMinutes, 5),
+    pollIntervalMinutes: asPositiveNumber(root.pollIntervalMinutes, 60),
+    reapIntervalMinutes: asPositiveNumber(root.reapIntervalMinutes, 60),
     endGraceMinutes: asPositiveNumber(root.endGraceMinutes, 10),
     epic: {
       country: typeof epic.country === 'string' && epic.country.trim() ? epic.country.trim() : 'US',
