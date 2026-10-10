@@ -15,6 +15,7 @@ interface EpicElement {
   productSlug?: string;
   urlSlug?: string;
   catalogNs?: { mappings?: Array<{ pageType?: string; pageSlug?: string }> };
+  offerMappings?: Array<{ pageType?: string; pageSlug?: string }>;
   keyImages?: Array<{ type?: string; url?: string }>;
   promotions?: { promotionalOffers?: Array<{ promotionalOffers?: EpicPromotionalOffer[] }> };
   price?: { totalPrice?: { fmtPrice?: { originalPrice?: string } } };
@@ -41,6 +42,23 @@ function pickImage(images: EpicElement['keyImages']): string | null {
     if (match?.url) return match.url;
   }
   return images.find((image) => image.url)?.url ?? null;
+}
+
+/**
+ * Store-page slug for the element. Newer catalog entries carry no
+ * productSlug and a GUID in urlSlug that is NOT a valid store path (404);
+ * the real slug lives in the catalogNs/offer "productHome" mappings, so
+ * those are preferred over urlSlug.
+ */
+function pageSlug(element: EpicElement): string | null {
+  const candidates = [
+    element.productSlug,
+    element.catalogNs?.mappings?.find((mapping) => mapping.pageType === 'productHome')?.pageSlug,
+    element.offerMappings?.find((mapping) => mapping.pageType === 'productHome')?.pageSlug,
+    element.urlSlug,
+  ];
+  const slug = candidates.find((candidate) => candidate && candidate.trim());
+  return slug ? slug.replace(/\/home$/i, '') : null;
 }
 
 /** The active 100%-off promotional offer for this element, if any. */
@@ -79,14 +97,9 @@ export class EpicSource implements GiveawaySource {
       const offer = currentFreeOffer(element);
       if (!offer) continue;
 
-      const slug =
-        element.productSlug ||
-        element.urlSlug ||
-        element.catalogNs?.mappings?.find((mapping) => mapping.pageType === 'productHome')
-          ?.pageSlug ||
-        null;
+      const slug = pageSlug(element);
       const claimUrl = slug
-        ? `https://store.epicgames.com/${this.cfg.locale}/p/${slug.replace(/\/home$/i, '')}`
+        ? `https://store.epicgames.com/${this.cfg.locale}/p/${slug}`
         : 'https://store.epicgames.com/free-games';
 
       const formatted = element.price?.totalPrice?.fmtPrice?.originalPrice?.trim();
